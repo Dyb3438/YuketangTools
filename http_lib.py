@@ -515,7 +515,7 @@ class CommentThread(QThread):
             total_discussion = self.getTotalDiscussion(discussion_id)
             if total_discussion['data']['new_comment_list']['count'] != 0:
                 id = random.choice(range(min(total_discussion['data']['new_comment_list']['count'], 10)))
-                comment = total_discussion['data']['new_comment_list']['results'][id]['content']['text']
+                comment = total_discussion['data']['new_comment_list']['results'][id]['content']
                 self.sendDiscussion(comment, discussion['data']['user_id'], discussion_id)
             self.finished.emit()
             self.updata_process.emit(1.0)
@@ -559,7 +559,7 @@ class CommentThread(QThread):
     
     def sendDiscussion(self, comment, to_user, discussion_id):
         url = "https://changjiang.yuketang.cn/v/discussion/v2/comment/"
-        data = {"to_user": to_user, "topic_id":discussion_id,"content":{"text":comment, "upload_images":[],"accessory_list":[]}}
+        data = {"to_user": to_user, "topic_id":discussion_id,"content":comment}
         header = {
             'xtbz': 'ykt',
             'classroom-id': str(self.comment_info['classroom_id']),

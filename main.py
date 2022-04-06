@@ -46,6 +46,8 @@ class MainWindow(QtWidgets.QWidget):
         for i in reversed(range(layout.count())):
             if layout.itemAt(i).widget() is not None:
                 layout.itemAt(i).widget().deleteLater()
+            else:
+                layout.takeAt(i)
         return
     
     def showQRCode(self, msg):
@@ -102,9 +104,7 @@ class MainWindow(QtWidgets.QWidget):
                 video_course['classroom_id'] = courseInfo['classroom_id']
                 video_course['video_id'] = video_course['id']
                 self.http_server.addVideoThread(video_course)
-            
-            
-
+        
         self.http_server.startAllThread()
         self.drawRealTimeInfo()
         if self.http_server.getThreadLength() == 0:
@@ -166,8 +166,6 @@ class MainWindow(QtWidgets.QWidget):
         self.now_process = QtWidgets.QLabel()
         self.now_process.setFont(QtGui.QFont("Courier New", 20))
         self.bodyLayout.addWidget(self.now_process)
-
-        self.bodyLayout.addSpacerItem(QtWidgets.QSpacerItem(0, 0, vPolicy=QtWidgets.QSizePolicy.Policy.Expanding))
         return
     
     def updateProcess(self, data):
@@ -177,7 +175,7 @@ class MainWindow(QtWidgets.QWidget):
             self.now_process.setText("目前进行第 %d 个任务: %0.2f%%" % (data['point'], data['val'] * 100))
         return
     
-    def eventFilter(self, a0: 'QObject', a1: 'QEvent') -> bool:
+    def eventFilter(self, a0, a1):
         if isinstance(a0, QtWidgets.QWidget):
             index = self.bodyLayout.indexOf(a0)
             if index >= 0:
